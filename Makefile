@@ -37,7 +37,7 @@ all: prep release debug
 #
 debug: $(DBGEXE)
 $(DBGEXE): $(DBGOBJS)
-	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $(DBGEXE) $^
+	$(CC) -o $(DBGEXE) $^
 $(DBGDIR)/%.o: %.c
 	$(CC) -c $(CFLAGS) $(DBGCFLAGS) -o $@ $<
 
@@ -47,7 +47,7 @@ $(DBGDIR)/%.o: %.c
 release: $(RELEXE)
 	strip $(RELEXE)
 $(RELEXE): $(RELOBJS)
-	$(CC) $(CFLAGS) $(RELCFLAGS) -o $(RELEXE) $^
+	$(CC) -o $(RELEXE) $^
 $(RELDIR)/%.o: %.c
 	$(CC) -c $(CFLAGS) $(RELCFLAGS) -o $@ $<
 

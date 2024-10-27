@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     !val ? printf("'mac' does not exist\n") : printf("'mac' does exist. val = %s\n", val);
 
     printf("\nTest 8: check if key 'mac' = 'f0:19:54:27:7d:ab'\n");
-    bool chk = conf_check_val(conf_test, "mac", "f0:79:59:67:7d:ad");
+    int chk = conf_check_val(conf_test, "mac", "f0:79:59:67:7d:ad");
     printf("%s\n", chk ? "true" : "false");
 
     printf("\nTest 9: check if key 'mac' = 'a3:b1:cd:d7:e9:f5'\n");

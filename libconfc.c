@@ -69,7 +69,7 @@ int conf_set_val(conf_t *cfg, const char *key, const char *value)
 }
 
 // get value by key
-const char *conf_get_val(conf_t *cfg, const char *key)
+char *conf_get_val(conf_t *cfg, const char *key)
 {
     conf_t *c;
     for(c = cfg; c != NULL; c = c->next)
@@ -108,18 +108,21 @@ int conf_load(conf_t *cfg, const char *file_name)
     char key[64] = { 0 };
     char value[64] = { 0 };
 
-    FILE* f = fopen(file_name, "r");
+    FILE *f = fopen(file_name, "r");
     if(!f) return 0;
     
+    int read_ok = 0;
     while(fgets(line_buf, sizeof line_buf, f) != NULL)
     {
         if(line_buf[0] == '#' || line_buf[0] == '\n') continue;
-        sscanf(line_buf, "%[^:\t =\n]%*[:\t =\n]%s", key, value);
+        if((sscanf(line_buf, "%[^:\t =\n]%*[:\t =\n]%s", key, value) != 2)) continue;
         conf_set_val(cfg, key, value);
         memset(key, 0x0, sizeof(key));
         memset(value, 0x0, sizeof(value));
+        read_ok = 1;
     }
-
+    if(!read_ok) return 0;
+    
     fclose(f);
     return 1;
 }
@@ -159,11 +162,16 @@ void conf_print(conf_t *cfg)
     } while(ct != NULL);
 }
 
-// check if key has concret value
-bool conf_check_val(conf_t *cfg, const char *key, const char *value)
+// check if value matches or key exists
+int conf_check_val(conf_t *cfg, const char *key, const char *value)
 {
-    if(!strcmp(conf_get_val(cfg, key), value)) return true;
-    else return false;
+    char *val = conf_get_val(cfg, key);
+    // if there is no such key
+    if(val == NULL) return 0;
+    // if value matches
+    if(!strcmp(val, value)) return 1;
+    // otherwise
+    return 0;
 }
 
 // adds config element to the beginning of chain
